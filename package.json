@@ -1,15 +1,15 @@
 {
-  "name": "zotero-addon-template",
-  "version": "0.1.6",
-  "description": "Zotero Addon Template",
+  "name": "znote",
+  "version": "0.0.1",
+  "description": "Zotero Note Translate",
   "config": {
-    "addonName": "Zotero Addon Template",
-    "addonID": "addontemplate@euclpts.com",
-    "addonRef": "addontemplate",
-    "addonInstance": "AddonTemplate",
-    "prefsPrefix": "extensions.zotero.addontemplate",
-    "releasepage": "https://github.com/windingwind/zotero-addon-template/releases/latest/download/zotero-addon-template.xpi",
-    "updaterdf": "https://raw.githubusercontent.com/windingwind/zotero-addon-template/bootstrap/update.json"
+    "addonName": "znote",
+    "addonID": "znote@sscc.org",
+    "addonRef": "znote",
+    "addonInstance": "znote",
+    "prefsPrefix": "extensions.zotero.znote",
+    "releasepage": "https://github.com/seasideccm/znote/releases/latest/download/znote.xpi",
+    "updaterdf": "https://raw.githubusercontent.com/seasideccm/znote/bootstrap/update.json"
   },
   "main": "src/index.ts",
   "scripts": {
@@ -32,14 +32,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/windingwind/zotero-addon-template.git"
+    "url": "git+https://github.com/seasideccm/znote.git"
   },
-  "author": "windingwind",
+  "author": "seasideCCM",
   "license": "AGPL-3.0-or-later",
   "bugs": {
-    "url": "https://github.com/windingwind/zotero-addon-template/issues"
+    "url": "https://github.com/seasideccm/znote/issues"
   },
-  "homepage": "https://github.com/windingwind/zotero-addon-template#readme",
+  "homepage": "https://github.com/seasideccm/znote#readme",
   "dependencies": {
     "zotero-plugin-toolkit": "^2.1.3"
   },

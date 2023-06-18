@@ -8,6 +8,7 @@ import {
 import { config } from "../package.json";
 import { getString, initLocale } from "./utils/locale";
 import { registerPrefsScripts } from "./modules/preferenceScript";
+import { znote } from "./modules/znote"								   
 
 async function onStartup() {
   await Promise.all([
@@ -38,6 +39,8 @@ async function onStartup() {
 
   KeyExampleFactory.registerShortcuts();
 
+  // 注意此代码不能放到后面去
+  znote.registerShortcuts();
   await Zotero.Promise.delay(1000);
   popupWin.changeLine({
     progress: 30,
@@ -48,6 +51,7 @@ async function onStartup() {
 
   UIExampleFactory.registerRightClickMenuItem();
 
+  znote.registerZnoteRightClickMenuItem();								  
   UIExampleFactory.registerRightClickMenuPopup();
 
   UIExampleFactory.registerWindowMenuWithSeparator();
@@ -139,7 +143,10 @@ function onShortcuts(type: string) {
     case "confliction":
       KeyExampleFactory.exampleShortcutConflictingCallback();
       break;
-    default:
+    case "getTxt":
+      znote.getTxtCallback();      
+      break;
+	default:
       break;
   }
 }
@@ -149,6 +156,9 @@ function onDialogEvents(type: string) {
     case "dialogExample":
       HelperExampleFactory.dialogExample();
       break;
+    case "dialogZnote":
+      znote.dialog();
+      break;				  
     case "clipboardExample":
       HelperExampleFactory.clipboardExample();
       break;
