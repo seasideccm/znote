@@ -8,7 +8,8 @@ export class znote {
     ztoolkit.Menu.register("item", {
       tag: "menuitem",
       label: getString("menuitem.label2"),
-      commandListener: (ev) => addon.hooks.onDialogEvents("dialogZnote"),
+      //commandListener: (ev) => addon.hooks.onDialogEvents("dialogZnote"),
+      commandListener: (ev) => znote.translateNote(),
       icon: menuIcon,
     });
   }
@@ -32,7 +33,7 @@ export class znote {
       })
       .show();
     let noteIDs = znote.getNoteIDs();
-    window.alert("成功获取笔记ID"+ noteIDs);
+    window.alert("成功获取笔记ID" + noteIDs);
   }
 
   static async dialog() {
@@ -132,13 +133,29 @@ export class znote {
     ztoolkit.log(dialogData);
   }
 
-  static async getNote(noteID: number) {
+  static async getNoteMD(noteID: number) {
     var note = Zotero.Items.get(noteID);
-    var mdtxt = await Zotero.BetterNotes.NoteParse.parseNoteToMD(note, {
-      withMeta: false,
-      skipSavingImages: true,
-      backend: "turndown",
-    });
+    let mdtxt = ''
+    //betterNote 插件版本
+    let betterNoteVersion = await znote.getAddonVersion('Knowledge4Zotero@windingwind.com')
+    if (betterNoteVersion.startsWith('1')) {
+      let dir = ''
+      mdtxt = await Zotero.BetterNotes.api.convert.note2md(note, dir,
+
+        {
+          keepNoteLink: false,
+          withYAMLHeader: false,
+          skipSavingImages: true
+        })
+    } else {
+      mdtxt = await Zotero.BetterNotes.NoteParse.parseNoteToMD(note, {
+        withMeta: false,
+        skipSavingImages: true,
+        backend: "turndown",
+      });
+    }
+    
+
     return mdtxt;
   }
 
@@ -148,7 +165,7 @@ export class znote {
       return [];
     }
 
-    var noteIDs:number[] = [];
+    var noteIDs: number[] = [];
     for (let item of items) {
       if (item.isRegularItem()) {
         //拼接笔记ID数组
@@ -166,7 +183,7 @@ export class znote {
     }
 
     // 判断 tag 筛选需要翻译的笔记
-    var tagNamesExclude:string[] = ['antmantr','antman'];
+    var tagNamesExclude: string[] = ['antmantr', 'antman'];
     if (!tagNamesExclude.length) {
       return [...new Set(noteIDs)];
     }
@@ -190,4 +207,41 @@ export class znote {
     // set解构赋值去重
     return [...new Set(noteTodoIDs)];
   }
+  static async translateNote() {
+
+    let noteID = Zotero.getActiveZoteroPane().getSelectedItems()[0].id
+    let mdTxt = await znote.getNoteMD(noteID) 
+    let transresult = await znote.translate(mdTxt)
+    Zotero.getActiveZoteroPane().selectItem(noteID)
+    let noteDuplicate = await Zotero.getActiveZoteroPane().duplicateSelectedItem()
+    noteDuplicate.setNote(transresult);
+    await noteDuplicate.saveTx()
+  }
+  static async translateNotes() {
+
+  }
+  static async translate(sourceTxt: string) {
+    var transresult = await Zotero.PDFTranslate.api.translate(sourceTxt)
+    window.alert(transresult.result)
+    return transresult.result
+  }
+
+  static async getAddonVersion(id: string) {
+    var { AddonManager } = ChromeUtils.import("resource://gre/modules/AddonManager.jsm");
+    var addon = await AddonManager.getAddonByID(id);
+    return addon.version
+  }
+
+  static znoteNotifierCallback() {
+    new ztoolkit.ProgressWindow(config.addonName)
+      .createLine({
+        text: "Selected note!",
+        type: "success",
+        progress: 100,
+      })
+      .show();
+  }
 }
+
+
+

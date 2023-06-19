@@ -1,10 +1,10 @@
-import {
+/* import {
   BasicExampleFactory,
   HelperExampleFactory,
   KeyExampleFactory,
   PromptExampleFactory,
   UIExampleFactory,
-} from "./modules/examples";
+} from "./modules/examples"; */
 import { config } from "../package.json";
 import { getString, initLocale } from "./utils/locale";
 import { registerPrefsScripts } from "./modules/preferenceScript";
@@ -33,11 +33,11 @@ async function onStartup() {
     })
     .show();
 
-  BasicExampleFactory.registerPrefs();
+/*   BasicExampleFactory.registerPrefs();
 
   BasicExampleFactory.registerNotifier();
 
-  KeyExampleFactory.registerShortcuts();
+  KeyExampleFactory.registerShortcuts(); */
 
   // 注意此代码不能放到后面去
   znote.registerShortcuts();
@@ -47,12 +47,12 @@ async function onStartup() {
     text: `[30%] ${getString("startup.begin")}`,
   });
 
-  UIExampleFactory.registerStyleSheet();
+/*   UIExampleFactory.registerStyleSheet();
 
-  UIExampleFactory.registerRightClickMenuItem();
+  UIExampleFactory.registerRightClickMenuItem(); */
 
   znote.registerZnoteRightClickMenuItem();								  
-  UIExampleFactory.registerRightClickMenuPopup();
+ /*  UIExampleFactory.registerRightClickMenuPopup();
 
   UIExampleFactory.registerWindowMenuWithSeparator();
 
@@ -73,8 +73,8 @@ async function onStartup() {
   PromptExampleFactory.registerAnonymousCommandExample();
 
   PromptExampleFactory.registerConditionalCommandExample();
-
-  await Zotero.Promise.delay(1000);
+ */
+/*   await Zotero.Promise.delay(1000);
 
   popupWin.changeLine({
     progress: 100,
@@ -82,7 +82,7 @@ async function onStartup() {
   });
   popupWin.startCloseTimer(5000);
 
-  addon.hooks.onDialogEvents("dialogExample");
+  addon.hooks.onDialogEvents("dialogExample"); */
 }
 
 function onShutdown(): void {
@@ -107,10 +107,12 @@ async function onNotify(
   ztoolkit.log("notify", event, type, ids, extraData);
   if (
     event == "select" &&
-    type == "tab" &&
-    extraData[ids[0]].type == "reader"
+    type == "item"// &&
+    //extraData[ids[0]].type == "reader"
   ) {
-    BasicExampleFactory.exampleNotifierCallback();
+    // 未成功
+    window.alert(extraData)
+    znote.znoteNotifierCallback();
   } else {
     return;
   }
@@ -134,7 +136,7 @@ async function onPrefsEvent(type: string, data: { [key: string]: any }) {
 
 function onShortcuts(type: string) {
   switch (type) {
-    case "larger":
+/*     case "larger":
       KeyExampleFactory.exampleShortcutLargerCallback();
       break;
     case "smaller":
@@ -142,7 +144,7 @@ function onShortcuts(type: string) {
       break;
     case "confliction":
       KeyExampleFactory.exampleShortcutConflictingCallback();
-      break;
+      break; */
     case "getTxt":
       znote.getTxtCallback();      
       break;
@@ -153,13 +155,13 @@ function onShortcuts(type: string) {
 
 function onDialogEvents(type: string) {
   switch (type) {
-    case "dialogExample":
+/*     case "dialogExample":
       HelperExampleFactory.dialogExample();
-      break;
+      break; */
     case "dialogZnote":
       znote.dialog();
       break;				  
-    case "clipboardExample":
+    /* case "clipboardExample":
       HelperExampleFactory.clipboardExample();
       break;
     case "filePickerExample":
@@ -170,7 +172,7 @@ function onDialogEvents(type: string) {
       break;
     case "vtableExample":
       HelperExampleFactory.vtableExample();
-      break;
+      break; */
     default:
       break;
   }
