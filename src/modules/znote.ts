@@ -9,7 +9,13 @@ export class znote {
       tag: "menuitem",
       label: getString("menuitem.label2"),
       //commandListener: (ev) => addon.hooks.onDialogEvents("dialogZnote"),
-      commandListener: (ev) => znote.translateNote(),
+      commandListener: (ev) => znote.translateNotes(),
+      icon: menuIcon,
+    });
+    ztoolkit.Menu.register("item", {
+      tag: "menuitem",
+      label: getString("menuitem.label3"),
+      commandListener: (ev) => znote.translateNotesCollection(),
       icon: menuIcon,
     });
   }
@@ -167,7 +173,10 @@ export class znote {
 
     var noteIDs: number[] = [];
     for (let item of items) {
-      if (item.isRegularItem()) {
+      if (item.isNote()) {
+        noteIDs.push(item.id);
+      }
+/*       if (item.isRegularItem()) {
         //拼接笔记ID数组
         noteIDs = noteIDs.concat(item.getNotes());
       }
@@ -179,11 +188,13 @@ export class znote {
       else {
         var parentItem = item.parentItem!;
         noteIDs = noteIDs.concat(parentItem.getNotes());
-      }
+      } */
     }
+    window.alert(noteIDs);
+    return noteIDs;
 
     // 判断 tag 筛选需要翻译的笔记
-    var tagNamesExclude: string[] = ['antmantr', 'antman'];
+   /*  var tagNamesExclude: string[] = ['antmantr', 'antman'];
     if (!tagNamesExclude.length) {
       return [...new Set(noteIDs)];
     }
@@ -205,11 +216,11 @@ export class znote {
       return [];
     }
     // set解构赋值去重
-    return [...new Set(noteTodoIDs)];
+    return [...new Set(noteTodoIDs)]; */
   }
-  static async translateNote() {
+  static async translateNote(noteID:number) {
 
-    let noteID = Zotero.getActiveZoteroPane().getSelectedItems()[0].id
+    //let noteID = Zotero.getActiveZoteroPane().getSelectedItems()[0].id
     let mdTxt = await znote.getNoteMD(noteID) 
     let transresult = await znote.translate(mdTxt)
     Zotero.getActiveZoteroPane().selectItem(noteID)
@@ -218,8 +229,17 @@ export class znote {
     await noteDuplicate.saveTx()
   }
   static async translateNotes() {
+    window.alert('调用')
+    let noteIDs = znote.getNoteIDs();
+
+    for(let noteID of noteIDs) {
+      await znote.translateNote(noteID);
+    }
+  }
+  static async translateNotesCollection() {
 
   }
+  
   static async translate(sourceTxt: string) {
     var transresult = await Zotero.PDFTranslate.api.translate(sourceTxt)
     window.alert(transresult.result)

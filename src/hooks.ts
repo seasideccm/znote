@@ -1,10 +1,3 @@
-/* import {
-  BasicExampleFactory,
-  HelperExampleFactory,
-  KeyExampleFactory,
-  PromptExampleFactory,
-  UIExampleFactory,
-} from "./modules/examples"; */
 import { config } from "../package.json";
 import { getString, initLocale } from "./utils/locale";
 import { registerPrefsScripts } from "./modules/preferenceScript";
@@ -33,56 +26,24 @@ async function onStartup() {
     })
     .show();
 
-/*   BasicExampleFactory.registerPrefs();
-
-  BasicExampleFactory.registerNotifier();
-
-  KeyExampleFactory.registerShortcuts(); */
-
   // 注意此代码不能放到后面去
   znote.registerShortcuts();
   await Zotero.Promise.delay(1000);
   popupWin.changeLine({
     progress: 30,
-    text: `[30%] ${getString("startup.begin")}`,
+    text: `[40%] ${getString("startup.begin")}`,
   });
 
-/*   UIExampleFactory.registerStyleSheet();
-
-  UIExampleFactory.registerRightClickMenuItem(); */
 
   znote.registerZnoteRightClickMenuItem();								  
- /*  UIExampleFactory.registerRightClickMenuPopup();
 
-  UIExampleFactory.registerWindowMenuWithSeparator();
-
-  await UIExampleFactory.registerExtraColumn();
-
-  await UIExampleFactory.registerExtraColumnWithCustomCell();
-
-  await UIExampleFactory.registerCustomCellRenderer();
-
-  await UIExampleFactory.registerCustomItemBoxRow();
-
-  UIExampleFactory.registerLibraryTabPanel();
-
-  await UIExampleFactory.registerReaderTabPanel();
-
-  PromptExampleFactory.registerNormalCommandExample();
-
-  PromptExampleFactory.registerAnonymousCommandExample();
-
-  PromptExampleFactory.registerConditionalCommandExample();
- */
-/*   await Zotero.Promise.delay(1000);
-
+  
   popupWin.changeLine({
     progress: 100,
-    text: `[100%] ${getString("startup.finish")}`,
+    text: `[100%] ${getString("startup.begin")}`,
   });
-  popupWin.startCloseTimer(5000);
-
-  addon.hooks.onDialogEvents("dialogExample"); */
+  await Zotero.Promise.delay(1000);
+  popupWin.close()
 }
 
 function onShutdown(): void {
