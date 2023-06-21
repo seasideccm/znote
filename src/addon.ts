@@ -12,10 +12,9 @@ class Addon {
     locale?: {
       stringBundle: any;
     };
-    prefs?: {
-      window: Window;
-      columns: Array<ColumnOptions>;
-      rows: Array<{ [dataKey: string]: string }>;
+    prefs: {
+      window: Window | null;
+
     };
     dialog?: DialogHelper;
   };
@@ -30,6 +29,7 @@ class Addon {
       env: __env__,
       // ztoolkit: new MyToolkit(),
       ztoolkit: new ZoteroToolkit(),
+      prefs: { window: null },
     };
     this.hooks = hooks;
     this.api = {};

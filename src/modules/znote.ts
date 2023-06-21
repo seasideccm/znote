@@ -1,4 +1,5 @@
 import { config } from "../../package.json";
+import { clearPref, getPref, setPref } from "../utils/prefs";
 import { getString } from "../utils/locale";
 
 export class znote {
@@ -142,7 +143,7 @@ export class znote {
   static async getNoteMD(noteID: number) {
     var note = Zotero.Items.get(noteID);
     let mdtxt = ''
-    //betterNote 插件版本
+    //兼容 betterNote 插件版本 0.8.9 和 1.0.0以上
     let betterNoteVersion = await znote.getAddonVersion('Knowledge4Zotero@windingwind.com')
     if (betterNoteVersion.startsWith('1')) {
       let dir = ''
@@ -190,7 +191,9 @@ export class znote {
         noteIDs = noteIDs.concat(parentItem.getNotes());
       } */
     }
-    window.alert(noteIDs);
+    let znoteInfoTxt = getString("info.selectednoteIDs")+noteIDs.toString()
+    znote.znoteInfo(znoteInfoTxt);
+    
     return noteIDs;
 
     // 判断 tag 筛选需要翻译的笔记
@@ -229,7 +232,7 @@ export class znote {
     await noteDuplicate.saveTx()
   }
   static async translateNotes() {
-    window.alert('调用')
+    //window.alert('调用')
     let noteIDs = znote.getNoteIDs();
 
     for(let noteID of noteIDs) {
@@ -242,7 +245,7 @@ export class znote {
   
   static async translate(sourceTxt: string) {
     var transresult = await Zotero.PDFTranslate.api.translate(sourceTxt)
-    window.alert(transresult.result)
+    //window.alert(transresult.result)
     return transresult.result
   }
 
@@ -261,7 +264,40 @@ export class znote {
       })
       .show();
   }
+
+  static znoteInfo (znoteInfo:string){  
+  const popupWin = new ztoolkit.ProgressWindow(config.addonName, {
+    closeOnClick: true,
+    closeTime: 3000,
+  })
+    .createLine({
+      text: znoteInfo,
+      type: "default",
+      progress: 0,
+    })
+    popupWin.show();
+    //popupWin.close();
+  }
 }
 
+export class serviceSwith{
+  public multiKey:{}= {};
 
+  static swithServiceID(serviceID:string){   
+    var keyField = 'translateSource';
+    setPref(keyField, serviceID);
+    znote.znoteInfo(getString("info.swithServiceID") + getPref(keyField));
 
+  }
+  static swithServiceKey(secretKey:string){
+    const secrets = JSON.parse((getPref("secretObj") as string) || "{}");
+    const serviceId =  getPref('translateSource') as string;
+
+    secrets[serviceId] = secretKey
+    setPref("secretObj", JSON.stringify(secrets));
+    znote.znoteInfo(getString("info.swithServiceKey"));
+  }
+  static ServiceValidator(){
+
+  }
+}
