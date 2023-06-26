@@ -41,7 +41,7 @@
   },
   "homepage": "https://github.com/seasideccm/znote#readme",
   "dependencies": {
-    "zotero-plugin-toolkit": "^2.1.3"
+    "zotero-plugin-toolkit": "^2.1.5"
   },
   "devDependencies": {
     "@types/node": "^20.1.1",
